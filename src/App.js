@@ -14,34 +14,51 @@ const App = () => {
     const [childClick, setChildClick] = useState(null);
 
     const [isLoading, setIsLoading] = useState(false);
+    const [filterPlaces, setFilterPlaces] = useState([])
 
-    useEffect(() =>{
+    const [type, setType] = useState('restaurants');
+    const [rating, setRating] = useState('');
+
+    useEffect(() =>{ //this effect happens when coordinate or bounds changes
         navigator.geolocation.getCurrentPosition(({coords: {latitude, longitude}}) =>{
             setCoordinates({lat: latitude, lng: longitude});
         })
     }, []);
 
-    useEffect(() => {
+    useEffect(() => {//this efect happens when type/bounds changes
         //console.log(coordinates, bounds);
+        if (bounds.sw && bounds.ne){ //if no coordinate don't stop the request
         setIsLoading(true);
-        getData(bounds.sw, bounds.ne)
+        getData(type, bounds.sw, bounds.ne)
             .then((data) => {
-                console.log(data);
-                setPlaces(data);
+                //console.log(data);
+                setPlaces(data?.filter((place) => place.name && place.num_reviews > 0));//filter data 
+                setFilterPlaces([]);//set to empty array everytime we get new data
                 setIsLoading(false);
             })
-    }, [coordinates, bounds]);
+        }
+    }, [type, bounds]); //dependency array
+
+    useEffect(() =>{
+        const filterPlaces = places.filter((place) => place.rating > rating );//function to check if place.rating is greater than current rating
+        setFilterPlaces(filterPlaces);
+    }, [rating]); //this effect happens when rating changes
 
     return (
         <>
-           {/* <CssBaseline/> is used to apply a baseline set of styles to normalize the rendering across different browsers. */}
-           <Header/>
+           <CssBaseline/> 
+           <Header setCoordinates={setCoordinates}/>
            <Grid container spacing={3} style={{width: '100%'}}>
                  <Grid item xs={12} md={4}>     {/*screen size small and medium */}
                     <List 
-                    places={places} 
+                    //props
                     childClick = {childClick}
+                    places={filterPlaces.length ? filterPlaces : places}//check if there is filter places  
                     isLoading = {isLoading}
+                    type={type}
+                    setType={setType}
+                    rating={rating}
+                    setRating={setRating}
                     />
                 </Grid>
                 <Grid item xs={12} md={8}>
@@ -49,7 +66,7 @@ const App = () => {
                         setCoordinates = {setCoordinates}
                         setBounds= {setBounds}
                         coordinates = {coordinates}
-                        places ={places}
+                        places ={filterPlaces.length ? filterPlaces : places}//check if there is filter places
                         setChildClick={setChildClick}
                     />
                 </Grid>

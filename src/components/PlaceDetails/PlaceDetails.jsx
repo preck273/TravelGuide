@@ -13,9 +13,7 @@ const PlaceDetails = ({place, selected, refProp }) => {
    //console.log(place);
     const classes = useStyles();
 
-    if(selected) refProp?.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-
-    
+    if(selected) refProp?.current?.scrollIntoView({ behavior: "smooth", block: "start" })//not working
 
     return (
         <Card elevation={6}>
@@ -42,12 +40,7 @@ const PlaceDetails = ({place, selected, refProp }) => {
                     <Typography gutterBottom variant="subtitle2">{place.ranking}</Typography>
 
                 </Box>
-                {place?.awards?.map((award) => (
-                    <Box display="flex" justifyContent="space-between" alignItem="center">
-                        <img src={award.images.small} alt={award.display_name} />
-                        <Typography variant="sub" color="textSecondary">{award.display_name} </Typography>
-                    </Box>
-                ))}
+            
                 {place?.cuisine?.map(({name}) =>(
                     <Chip key={name} size="small" label={name} className={classes.chip}/>
                 ))}
