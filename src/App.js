@@ -18,6 +18,7 @@ const App = () => {
 
     const [type, setType] = useState('restaurants');
     const [rating, setRating] = useState('');
+    
 
     useEffect(() =>{ //this effect happens when coordinate or bounds changes
         navigator.geolocation.getCurrentPosition(({coords: {latitude, longitude}}) =>{
@@ -43,6 +44,10 @@ const App = () => {
         const filterPlaces = places.filter((place) => place.rating > rating );//function to check if place.rating is greater than current rating
         setFilterPlaces(filterPlaces);
     }, [rating]); //this effect happens when rating changes
+
+    useEffect(() => {
+
+    }, []);
 
     return (
         <>
